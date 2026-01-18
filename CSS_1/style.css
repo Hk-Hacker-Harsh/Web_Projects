@@ -1,0 +1,22 @@
+*{
+    margin: 0%;
+    padding: 0%;
+}
+#main{
+    background-image: url(https://i0.wp.com/picjumbo.com/wp-content/uploads/green-natural-background-with-wooden-surface-free-image.jpeg);
+    background-size:cover;
+    height: 1000px;
+    width: 100%;
+}
+
+#head{
+    padding: 10px;
+    margin: 0px;
+    border: 2px solid white;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+#head>h1{
+    color: aliceblue;
+}
