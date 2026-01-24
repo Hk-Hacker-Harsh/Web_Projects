@@ -8,30 +8,29 @@ function IsEmail(email) {
         return true;
     }}
 
+function showError(msg) {
+        $("#output").html(msg).addClass("alert-error").fadeIn();
+    }
+
 function passchk(password){
     if (password.length < 8){
-        $("#output").html("Minimum Password Length should be 8 Characters.")
-        $("#output").css("color","red")
+        showError("Password must be 8+ characters.")
         return false;
     }
     if ((password.match(/[a-z]/)) == null){
-        $("#output").html("Password must contain atleast 1 Lower Case.")
-        $("#output").css("color","red")
+        showError("Need 1 Lower Case letter.")
         return false;
     }
     if ((password.match(/[A-Z]/)) == null){
-        $("#output").html("Password must contain atleast 1 Upper Case.")
-        $("#output").css("color","red")
+        showError("Need 1 Upper Case letter.")
         return false;
     }
     if ((password.match(/[0-9]/)) == null){
-        $("#output").html("Password must contain atleast 1 Numeric.")
-        $("#output").css("color","red")
+        showError("Need 1 Numeric character.")
         return false;
     }
     if ((password.match(/[@#.!$%&*()\-_=+|,;:'"]/)) == null){
-        $("#output").html("Password must contain 1 Special Character.")
-        $("#output").css("color","red")
+        showError("Need 1 Special character.")
         return false;
     }
     return true;
@@ -39,45 +38,47 @@ function passchk(password){
 
 
 $("#butt").click(function(){
-    var flag = true
+    //variables
+    const email = $("#email").val();
+    const phone = $("#phone").val();
+    const pass = $("#pass").val();
+    const confirmpass = $("#conpass").val();
+    const output = $("#output");
+
+    output.removeClass("alert-error alert-success").hide();
+
     //Empty Check
-    if ($("#email").val()=="" || $("#phone").val()=="" || $("#pass").val()=="" || $("#conpass").val()==""){
-        $("#output").html("Input Fields can not be Empty!!")
-        $("#output").css("color","red")
-        flag=false
+    if (email == "" || phone == "" || pass == "" || confirmpass == ""){
+        showError("Input Fields cannot be Empty!!");
+       return;
     }
 
     // Email Check
-    if (!IsEmail($("#email").val())){
-        $("#output").html("Please Enter Valid Email Address!!")
-        $("#output").css("color","red")
-        flag=false
+    if (!IsEmail(email)){
+        showError("Please Enter Valid Email Address!!");
+        return;
     }
 
     // Phone Check
-    if (($("#phone").val()).length != 10){
-        $("#output").html("Please Enter Valid Indian Mobile Number!!")
-        $("#output").css("color","red")
-        flag=false
+    if (phone.length != 10){
+        showError("Please Enter Valid 10-digit Number!!");
+        return;
     }
 
     // Pass Check
-    var value = $('#pass').val();
-    if (!passchk(value)){
-        flag=false
+    if (!passchk(pass)){
+        return;
     }
 
     // Pass Match
-    if($("#pass").val()!=$("#conpass").val()){
-        $("#output").html("Password and Confirm Password not match")
-        $("#output").css("color","red")
-        flag=false
+    if(pass!=confirmpass){
+        showError("Passwords do not match!");
+        return;
     }
     // Check if everything is OK.
-    if (flag){
-        $("#output").html("User Registered!!")
-        $("#output").css("color","green")
-    }
+    
+    output.html("User Registered Successfully!!").addClass("alert-success").fadeIn();
+    output.css("color","green")
 })
 
 // Password show/hide functionality
