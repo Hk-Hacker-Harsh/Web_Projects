@@ -1,4 +1,41 @@
+const inputField = document.getElementById('phone');
+
+inputField.addEventListener('input', (e) => {
+    let digits = e.target.value.replace(/\D/g, '');
+    
+    digits = digits.substring(0, 12);
+    
+    let formatted = '';
+
+    if (digits.length > 0) {
+        formatted = '+';
+
+        if (digits.length <= 2) {
+            formatted += digits;
+        } else if (digits.length <= 7) {
+            formatted += digits.substring(0, 2) + ' ' + digits.substring(2);
+        } else {
+            formatted += digits.substring(0, 2) + ' ' + digits.substring(2, 7) + ' ' + digits.substring(7);
+        }
+    }
+    e.target.value = formatted;
+});
+
+
+
 // Functions
+function IsPhone(num){
+    if (num.slice(0,3)!="+91"){
+        return false;
+    }
+
+    if(num.length!=10){
+        return false;
+    }
+    return true;
+
+}
+
 function IsEmail(email) {
     const regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     if (!regex.test(email)) {
@@ -60,8 +97,8 @@ $("#butt").click(function(){
     }
 
     // Phone Check
-    if (phone.length != 10){
-        showError("Please Enter Valid 10-digit Number!!");
+    if (!IsPhone(phone)){
+        showError("Please Enter Valid 10-digit Indian Number!!");
         return;
     }
 
