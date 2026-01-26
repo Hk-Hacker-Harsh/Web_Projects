@@ -29,7 +29,7 @@ function IsPhone(num){
         return false;
     }
 
-    if(num.length!=10){
+    if(num.length!=15){
         return false;
     }
     return true;
