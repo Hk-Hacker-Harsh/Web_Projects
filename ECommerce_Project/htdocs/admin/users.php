@@ -68,6 +68,7 @@ $result = mysqli_query($conn, $query);
 
 // 4. NOW START SENDING HTML
 require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/dashboard_nav.php';
 ?>
 
 <div class="container-fluid mt-5 px-4">

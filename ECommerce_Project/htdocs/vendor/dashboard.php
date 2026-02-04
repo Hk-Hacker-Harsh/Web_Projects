@@ -26,6 +26,7 @@ $total_products = mysqli_fetch_assoc($product_count_res)['total'] ?? 0;
 
 // 3. NOW START SENDING HTML
 require_once __DIR__ . '/../includes/header.php'; // HTML output starts here!
+require_once __DIR__ . '/../includes/dashboard_nav.php';
 ?>
 
 <div class="container mt-5">

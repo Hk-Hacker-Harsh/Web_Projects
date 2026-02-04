@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/dashboard_nav.php';
 // Assuming you have a vendor_auth.php similar to admin_auth.php
 if (!isset($_SESSION['vendor_logged_in'])) {
     header("Location: login.php");

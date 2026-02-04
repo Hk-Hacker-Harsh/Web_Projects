@@ -1,22 +1,26 @@
 <?php
 session_start();
+require_once 'db.php';
 
-if (isset($_GET['id'])) {
-    $product_id = $_GET['id'];
+$product_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$selected_variations = isset($_GET['variation']) ? $_GET['variation'] : [];
 
-    // If cart doesn't exist, create it
-    if (!isset($_SESSION['cart'])) {
-        $_SESSION['cart'] = [];
-    }
+// Create a unique key for this specific variation
+// Example: Product 1 with Variation 14 becomes key "1_14"
+$variation_string = !empty($selected_variations) ? implode('_', $selected_variations) : '0';
+$cart_key = $product_id . '_' . $variation_string;
 
-    // If product is already in cart, increment quantity. Otherwise, set to 1.
-    if (isset($_SESSION['cart'][$product_id])) {
-        $_SESSION['cart'][$product_id]++;
-    } else {
-        $_SESSION['cart'][$product_id] = 1;
-    }
-
-    header("Location: cart.php");
-    exit();
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
 }
+
+// If this specific combination exists, increment; otherwise, set to 1
+if (isset($_SESSION['cart'][$cart_key])) {
+    $_SESSION['cart'][$cart_key]++;
+} else {
+    $_SESSION['cart'][$cart_key] = 1;
+}
+
+header("Location: cart.php?msg=added");
+exit();
 ?>

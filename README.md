@@ -52,46 +52,6 @@ A robust, full-stack PHP application that allows users to browse products, vendo
 * **Security:** Middleware-protected routes to ensure only admins can access the backend.
 * **Review Moderation:** Manage customer feedback and contact messages.
 
----
-
-## 🚀 Getting Started
-
-To run the final project locally, follow these steps:
-
-### 1. Prerequisites
-Install a local server environment like **XAMPP** or **WAMP**.
-
-### 2. Database Installation
-1.  Open **phpMyAdmin**.
-2.  Create a new database.
-3.  Add DB Credentials in db.php.
-4.  Import the file: `/ECommerce_Project/Database&DummyData.sql`.
-
-### 3. File Configuration
-1.  Copy the contents of the `/htdocs` folder into your server's root directory (e.g., `C:/xampp/htdocs/my-store`).
-2.  Open `db.php` and configure your database connection:
-    ```php
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "ecommerce_db";
-    ```
-
-### 4. Accessing the Site
-* **Main Store:** `http://localhost/index.php`
-* **Admin Panel:** `http://localhost/admin/index.php`
-* **Vendor Panel:** `http://localhost/vendor/index.php`
-
----
-
-## 🖼️ Media Assets
-The project includes a dedicated `/Assets` folder containing:
-* **Banners:** Featured images for the home page slider.
-* **Uploads:** Dynamically stored product images uploaded by vendors.
-* **Libraries:** Local copies of Bootstrap and jQuery for offline development.
-
----
-
 ## 👨‍💻 Author
 **Harsh Khandal** *Passionate Web Developer*
 <br>

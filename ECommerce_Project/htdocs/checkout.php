@@ -1,18 +1,19 @@
 <?php
-require_once __DIR__ . '/includes/header.php';
+ob_start();
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: signin.php");
+    exit();
+}
+
 require_once __DIR__ . '/db.php';
-require_once __DIR__ . '/includes/session.php';
-protect_page();
+require_once __DIR__ . '/includes/header.php';
 
 if (empty($_SESSION['cart'])) {
     header("Location: product.php");
     exit();
 }
-
-// Fetch items for summary
-$ids = implode(',', array_keys($_SESSION['cart']));
-$query = "SELECT * FROM products WHERE id IN ($ids)";
-$result = mysqli_query($conn, $query);
 
 $subtotal_sum = 0;
 $discount_amount = 0;
@@ -36,17 +37,46 @@ $discount_amount = 0;
                             </tr>
                         </thead>
                         <tbody>
-                            <?php while ($row = mysqli_fetch_assoc($result)): 
-                                $qty = $_SESSION['cart'][$row['id']];
-                                $item_total = $row['price'] * $qty;
+                            <?php 
+                            // Loop through the composite keys (e.g., "1_14")
+                            foreach ($_SESSION['cart'] as $cart_key => $qty): 
+                                $parts = explode('_', $cart_key);
+                                $p_id = (int)$parts[0];
+
+                                // Fetch Base Product
+                                $p_query = "SELECT * FROM products WHERE id = $p_id";
+                                $p_res = mysqli_query($conn, $p_query);
+                                $product = mysqli_fetch_assoc($p_res);
+
+                                if (!$product) continue;
+
+                                $unit_price = $product['price'];
+                                $variation_text = "";
+
+                                // Process Variations
+                                for ($i = 1; $i < count($parts); $i++) {
+                                    $v_id = (int)$parts[$i];
+                                    if ($v_id > 0) {
+                                        $v_query = "SELECT variation_name, variation_value, price_modifier FROM product_variations WHERE id = $v_id";
+                                        $v_res = mysqli_query($conn, $v_query);
+                                        if ($v_data = mysqli_fetch_assoc($v_res)) {
+                                            $unit_price += $v_data['price_modifier'];
+                                            $variation_text .= " (" . $v_data['variation_value'] . ")";
+                                        }
+                                    }
+                                }
+
+                                $item_total = $unit_price * $qty;
                                 $subtotal_sum += $item_total;
                             ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($row['name']); ?></td>
+                                <td>
+                                    <?php echo htmlspecialchars($product['name'] . $variation_text); ?>
+                                </td>
                                 <td><?php echo $qty; ?></td>
                                 <td>$<?php echo number_format($item_total, 2); ?></td>
                             </tr>
-                            <?php endwhile; ?>
+                            <?php endforeach; ?>
                             
                             <tr class="table-light">
                                 <td colspan="2">Subtotal</td>
@@ -94,11 +124,11 @@ $discount_amount = 0;
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="payment_method" id="razorpay" value="razorpay">
-                                <label class="form-check-label fw-bold" for="razorpay">
-                                    Online Payment (Razorpay)
+                                <input class="form-check-input" type="radio" name="payment_method" id="stripe" value="stripe">
+                                <label class="form-check-label fw-bold" for="stripe">
+                                    Online Payment (Stripe)
                                 </label>
-                                <div class="text-muted small">Pay securely via Cards, UPI, or Netbanking</div>
+                                <div class="text-muted small">Pay securely via Credit/Debit Card</div>
                             </div>
                         </div>
 

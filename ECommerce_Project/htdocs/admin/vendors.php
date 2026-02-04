@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/dashboard_nav.php';
 require_once __DIR__ . '/admin_auth.php';
 
 $message = "";

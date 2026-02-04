@@ -33,10 +33,6 @@ if (isset($_GET['remove_coupon'])) {
 echo '<div class="container mt-5"><h2>Your Shopping Cart</h2>';
 
 if (!empty($_SESSION['cart'])) {
-    $ids = implode(',', array_keys($_SESSION['cart']));
-    $query = "SELECT * FROM products WHERE id IN ($ids)";
-    $result = mysqli_query($conn, $query);
-
     echo '<table class="table align-middle">
             <thead>
                 <tr>
@@ -50,25 +46,54 @@ if (!empty($_SESSION['cart'])) {
             <tbody>';
     
     $subtotal_sum = 0;
-    while ($row = mysqli_fetch_assoc($result)) {
-        $id = $row['id'];
-        $qty = $_SESSION['cart'][$id];
-        $item_total = $row['price'] * $qty;
+
+    // Loop through the cart using the cart_key (e.g., "1_14_15")
+    foreach ($_SESSION['cart'] as $cart_key => $qty) {
+        $parts = explode('_', $cart_key);
+        $p_id = (int)$parts[0];
+
+        // Fetch Base Product
+        $p_query = "SELECT * FROM products WHERE id = $p_id";
+        $p_res = mysqli_query($conn, $p_query);
+        $product = mysqli_fetch_assoc($p_res);
+
+        if (!$product) continue;
+
+        $unit_price = $product['price'];
+        $variation_info = "";
+
+        // Process Variations stored in the key
+        for ($i = 1; $i < count($parts); $i++) {
+            $v_id = (int)$parts[$i];
+            if ($v_id > 0) {
+                $v_query = "SELECT variation_name, variation_value, price_modifier FROM product_variations WHERE id = $v_id";
+                $v_res = mysqli_query($conn, $v_query);
+                if ($v_data = mysqli_fetch_assoc($v_res)) {
+                    $unit_price += $v_data['price_modifier'];
+                    $variation_info .= "<br><small class='text-muted'>{$v_data['variation_name']}: {$v_data['variation_value']}</small>";
+                }
+            }
+        }
+
+        $item_total = $unit_price * $qty;
         $subtotal_sum += $item_total;
 
         echo "<tr>
-                <td>{$row['name']}</td>
-                <td>\${$row['price']}</td>
+                <td>
+                    <strong>" . htmlspecialchars($product['name']) . "</strong>
+                    $variation_info
+                </td>
+                <td>\$" . number_format($unit_price, 2) . "</td>
                 <td>
                     <div class='btn-group btn-group-sm'>
-                        <a href='update_cart.php?id=$id&action=dec' class='btn btn-outline-secondary'>-</a>
+                        <a href='update_cart.php?id=$cart_key&action=dec' class='btn btn-outline-secondary'>-</a>
                         <span class='btn border-secondary disabled'>$qty</span>
-                        <a href='update_cart.php?id=$id&action=inc' class='btn btn-outline-secondary'>+</a>
+                        <a href='update_cart.php?id=$cart_key&action=inc' class='btn btn-outline-secondary'>+</a>
                     </div>
                 </td>
-                <td>\${$item_total}</td>
+                <td>\$" . number_format($item_total, 2) . "</td>
                 <td>
-                    <a href='update_cart.php?id=$id&action=delete' class='btn btn-danger btn-sm'>Delete</a>
+                    <a href='update_cart.php?id=$cart_key&action=delete' class='btn btn-danger btn-sm'>Delete</a>
                 </td>
               </tr>";
     }

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/dashboard_nav.php';
 require_once __DIR__ . '/admin_auth.php';
 
 // 1. Fetch Quick Stats
@@ -16,9 +17,12 @@ $low_stock_count = mysqli_fetch_assoc($low_stock_res)['total'] ?? 0;
 $user_count_res = mysqli_query($conn, "SELECT COUNT(id) as total FROM users");
 $total_users = mysqli_fetch_assoc($user_count_res)['total'] ?? 0;
 
-// NEW: Fetch Contact Message Count
 $msg_count_res = mysqli_query($conn, "SELECT COUNT(id) as total FROM contact_messages");
 $total_messages = mysqli_fetch_assoc($msg_count_res)['total'] ?? 0;
+
+// NEW: Fetch Active Banner Count
+$banner_count_res = mysqli_query($conn, "SELECT COUNT(id) as total FROM banners WHERE status = 1");
+$total_banners = mysqli_fetch_assoc($banner_count_res)['total'] ?? 0;
 ?>
 
 <div class="container mt-5 mb-5">
@@ -29,7 +33,7 @@ $total_messages = mysqli_fetch_assoc($msg_count_res)['total'] ?? 0;
         </div>
     </div>
 
-    <div class="row g-4 mb-5 text-center">
+    <div class="row g-3 mb-5 text-center">
         <div class="col-md-2">
             <div class="card bg-primary text-white shadow-sm border-0 h-100">
                 <div class="card-body">
@@ -46,7 +50,7 @@ $total_messages = mysqli_fetch_assoc($msg_count_res)['total'] ?? 0;
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card bg-warning text-dark shadow-sm border-0 h-100">
                 <div class="card-body">
                     <h6 class="text-uppercase small fw-bold">Low Stock</h6>
@@ -57,16 +61,24 @@ $total_messages = mysqli_fetch_assoc($msg_count_res)['total'] ?? 0;
         <div class="col-md-2">
             <div class="card bg-info text-white shadow-sm border-0 h-100">
                 <div class="card-body">
-                    <h6 class="text-uppercase small fw-bold">Customers</h6>
+                    <h6 class="text-uppercase small fw-bold">Users</h6>
                     <h3 class="mb-0"><?= $total_users; ?></h3>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card bg-secondary text-white shadow-sm border-0 h-100">
                 <div class="card-body">
-                    <h6 class="text-uppercase small fw-bold">Inquiries</h6>
+                    <h6 class="text-uppercase small fw-bold">Messages</h6>
                     <h3 class="mb-0"><?= $total_messages; ?></h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-dark text-white shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h6 class="text-uppercase small fw-bold">Live Banners</h6>
+                    <h3 class="mb-0"><?= $total_banners; ?></h3>
                 </div>
             </div>
         </div>
@@ -74,6 +86,20 @@ $total_messages = mysqli_fetch_assoc($msg_count_res)['total'] ?? 0;
 
     <h4 class="mb-4">Management Console</h4>
     <div class="row g-4">
+        
+        <div class="col-md-12">
+            <div class="card h-100 shadow-sm border-primary hover-shadow">
+                <div class="card-body text-center py-4">
+                    <div class="display-5 text-primary mb-3"><i class="bi bi-globe"></i></div>
+                    <h5>Storefront</h5>
+                    <p class="small text-muted">Live preview of HK Store.</p>
+                    <a href="../index.php" target="_blank" class="btn btn-primary w-100 mt-2">Go to Site</a>
+                </div>
+            </div>
+        </div>
+        
+        
+
         <div class="col-md-4">
             <div class="card h-100 shadow-sm hover-shadow">
                 <div class="card-body text-center py-4">
@@ -109,13 +135,23 @@ $total_messages = mysqli_fetch_assoc($msg_count_res)['total'] ?? 0;
         </div>
 
         <div class="col-md-4">
+            <div class="card h-100 shadow-sm hover-shadow border-primary">
+                <div class="card-body text-center py-4">
+                    <div class="display-5 text-primary mb-3"><i class="bi bi-images"></i></div>
+                    <h5>Banners</h5>
+                    <p class="small text-muted">Manage homepage slider and promotions.</p>
+                    <a href="manage_banners.php" class="btn btn-outline-primary w-100 mt-2">Manage Banners</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
             <div class="card h-100 shadow-sm hover-shadow">
                 <div class="card-body text-center py-4">
                     <div class="display-5 text-info mb-3"><i class="bi bi-tags"></i></div>
                     <h5>Categories</h5>
                     <p class="small text-muted">Organize catalog grouping and labels.</p>
                     <a href="categories.php" class="btn btn-outline-info w-100 mt-2">Manage Categories</a>
-                    <a href="add_category.php" class="btn btn-link btn-sm mt-1 text-decoration-none">+ New Category</a>
                 </div>
             </div>
         </div>
@@ -175,16 +211,41 @@ $total_messages = mysqli_fetch_assoc($msg_count_res)['total'] ?? 0;
             </div>
         </div>
 
-        <div class="col-md-12">
-            <div class="card h-100 shadow-sm border-primary hover-shadow">
+        
+        
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm hover-shadow">
                 <div class="card-body text-center py-4">
-                    <div class="display-5 text-primary mb-3"><i class="bi bi-globe"></i></div>
-                    <h5>Storefront</h5>
-                    <p class="small text-muted">Live preview of HK Store.</p>
-                    <a href="../index.php" target="_blank" class="btn btn-primary w-100 mt-2">Go to Site</a>
+                    <div class="display-5 text-indigo mb-3" style="color: #6610f2;"><i class="bi bi-graph-up"></i></div>
+                    <h5>SEO</h5>
+                    <p class="small text-muted">SEO Tools and Sitemap.</p>
+                    <a href="seo_tools.php" class="btn btn-outline-indigo w-100 mt-2" style="border-color: #6610f2; color: #6610f2;">Check Here</a>
                 </div>
             </div>
         </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm hover-shadow">
+                <div class="card-body text-center py-4">
+                    <div class="display-5 text-indigo mb-3" style="color: #6610f2;"><i class="bi bi-graph-up"></i></div>
+                    <h5>Stripe</h5>
+                    <p class="small text-muted">Visit Stripe Dashboard.</p>
+                    <a href="https://dashboard.stripe.com/" class="btn btn-outline-indigo w-100 mt-2" style="border-color: #6610f2; color: #6610f2;">Go to Stripe Dashboard</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm hover-shadow">
+                <div class="card-body text-center py-4">
+                    <div class="display-5 text-indigo mb-3" style="color: #6610f2;"><i class="bi bi-graph-up"></i></div>
+                    <h5>CSV</h5>
+                    <p class="small text-muted">Export and Import CSV.</p>
+                    <a href="data_management.php" class="btn btn-outline-indigo w-100 mt-2" style="border-color: #6610f2; color: #6610f2;">Export And Import</a>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </div>
 
