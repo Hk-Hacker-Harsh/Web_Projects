@@ -1,0 +1,9 @@
+# Block all search engines from indexing the site
+User-agent: *
+Disallow: /
+
+# Specifically protect sensitive project folders
+Disallow: /admin/
+Disallow: /vendor/
+Disallow: /includes/
+Disallow: /db.php
