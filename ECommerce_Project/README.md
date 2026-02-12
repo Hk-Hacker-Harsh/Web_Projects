@@ -1,4 +1,12 @@
 ### Link : [http://ecoproject.infinityfree.me/](http://ecoproject.infinityfree.me/)
+<<<<<<< HEAD
+=======
+### Use these <a href=#test-credentials>Credentials</a>
+### Admin url : http://ecoproject.infinityfree.me/admin/
+### Vendor url : http://ecoproject.infinityfree.me/vendor/
+
+### Paths available in site <a href=#files>Paths</a>
+>>>>>>> db12154d315113d8d49c8b12bfc24dd6c516d82f
 
 # Hk Store - Multi-Vendor E-commerce Platform
 
