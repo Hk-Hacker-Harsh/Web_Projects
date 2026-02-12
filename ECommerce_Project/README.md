@@ -1,6 +1,4 @@
 ### Link : [http://ecoproject.infinityfree.me/](http://ecoproject.infinityfree.me/)
-### Use these <a href=#test-credentials>Credentials</a>
-### Paths available in site <a href=#files>Paths</a>
 
 # Hk Store - Multi-Vendor E-commerce Platform
 
@@ -78,13 +76,11 @@ You can use the following accounts to test the different access levels and funct
 2. **Database Configuration:**
     - Create a MySQL database (e.g., hk_store).
 
-    - Update [db.php](./htdocs/db.php) with your original DataBase Credentials.
+    - Update [config.php](./htdocs/config.php) with your original DataBase Credentials and Stripe API Keys.
 
     - Import the Database&DummyData.sql file to generate tables and dummy data.
 
 3. **Deployment:**
-    - Update Stripe API Key (Secret_key) in [process_checkout.php](./htdocs/process_checkout.php), [process_payment.php](./htdocs/process_payment.php), and [success.php](./htdocs/success.php).
-
     - Move the contents of the htdocs folder to your local server directory (e.g., XAMPP htdocs) or your live hosting public directory.
 
 ## Files
@@ -100,11 +96,14 @@ ECommerce_Project
     │   │   add_to_cart.php
     │   │   cart.php
     │   │   checkout.php
+    │   │   config.php
     │   │   contact.php
     │   │   db.php
+    │   │   error.php
     │   │   index.php
     │   │   logout.php
     │   │   order_details.php
+    │   │   private_error_log.log
     │   │   process_checkout.php
     │   │   process_payment.php
     │   │   product.php
@@ -118,6 +117,7 @@ ECommerce_Project
     │   │   t&c.php
     │   │   toggle_wishlist.php
     │   │   update_cart.php
+    │   │   webhook.php
     │   │   wishlist.php
     │   │
     │   ├───admin
@@ -152,17 +152,11 @@ ECommerce_Project
     │   │   │       user_4_1770049618.jpg
     │   │   │
     │   │   ├───Banners
-    │   │   │       1.png
     │   │   │       1770047495_1.png
     │   │   │       1770047516_2.png
     │   │   │       1770047524_3.png
-    │   │   │       2.png
-    │   │   │       3.png
     │   │   │
     │   │   └───upload
-    │   │           1769860587_four.jpg
-    │   │           1769860647_four.jpg
-    │   │           1769882083_three.jpg
     │   │           1769916413_lap.jpg
     │   │           1769916548_lap2.png
     │   │           1769917646_fas1.jpg
@@ -188,7 +182,7 @@ ECommerce_Project
     │   │       header.php
     │   │       session.php
     │   │
-    │   ├───stripe-php (Stripe File from https://github.com/stripe/stripe-php/tree/master)
+    │   ├───stripe-php (So Many Files Here)
     │   │
     │   └───vendor
     │           add_product.php
