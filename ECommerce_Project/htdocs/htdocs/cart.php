@@ -33,6 +33,9 @@ if (isset($_GET['remove_coupon'])) {
 echo '<div class="container mt-5"><h2>Your Shopping Cart</h2>';
 
 if (!empty($_SESSION['cart'])) {
+    // Flag to track if we can proceed to checkout
+    $can_proceed = true;
+
     echo '<table class="table align-middle">
             <thead>
                 <tr>
@@ -47,22 +50,28 @@ if (!empty($_SESSION['cart'])) {
     
     $subtotal_sum = 0;
 
-    // Loop through the cart using the cart_key (e.g., "1_14_15")
     foreach ($_SESSION['cart'] as $cart_key => $qty) {
         $parts = explode('_', $cart_key);
         $p_id = (int)$parts[0];
 
-        // Fetch Base Product
+        // Fetch Base Product and its current Stock
         $p_query = "SELECT * FROM products WHERE id = $p_id";
         $p_res = mysqli_query($conn, $p_query);
         $product = mysqli_fetch_assoc($p_res);
 
         if (!$product) continue;
 
+        // --- STOCK CHECK LOGIC ---
+        $stock_warning = "";
+        if ($product['stock'] < $qty) {
+            $can_proceed = false; // Block checkout
+            $stock_warning = "<div class='text-danger fw-bold small'><i class='bi bi-exclamation-triangle'></i> Only {$product['stock']} left in stock!</div>";
+        }
+        // -------------------------
+
         $unit_price = $product['price'];
         $variation_info = "";
 
-        // Process Variations stored in the key
         for ($i = 1; $i < count($parts); $i++) {
             $v_id = (int)$parts[$i];
             if ($v_id > 0) {
@@ -82,6 +91,7 @@ if (!empty($_SESSION['cart'])) {
                 <td>
                     <strong>" . htmlspecialchars($product['name']) . "</strong>
                     $variation_info
+                    $stock_warning
                 </td>
                 <td>\$" . number_format($unit_price, 2) . "</td>
                 <td>
@@ -99,7 +109,6 @@ if (!empty($_SESSION['cart'])) {
     }
     echo "</tbody></table>";
 
-    // --- Start Calculation Section ---
     if (isset($_SESSION['applied_coupon'])) {
         $cp = $_SESSION['applied_coupon'];
         if ($cp['discount_type'] == 'percentage') {
@@ -109,7 +118,6 @@ if (!empty($_SESSION['cart'])) {
         }
     }
     $final_total = $subtotal_sum - $discount_amount;
-    // --- End Calculation Section ---
 
     echo '<div class="row mt-4">
             <div class="col-md-5">
@@ -130,9 +138,17 @@ if (!empty($_SESSION['cart'])) {
                 }
 
     echo '      <h3 class="mt-2 text-primary">Grand Total: $'.number_format($final_total, 2).'</h3>
-                <div class="mt-4">
-                    <a href="product.php" class="btn btn-secondary">Continue Shopping</a>
-                    <a href="checkout.php" class="btn btn-primary btn-lg">Proceed to Checkout</a>
+                <div class="mt-4">';
+                    
+                    // Show warning if checkout is blocked
+                    if (!$can_proceed) {
+                        echo '<div class="alert alert-warning d-inline-block py-2 px-3 small me-2">
+                                <i class="bi bi-info-circle"></i> Please resolve stock issues to proceed.
+                              </div>';
+                    }
+
+    echo '          <a href="product.php" class="btn btn-secondary">Continue Shopping</a>
+                    <a href="checkout.php" class="btn btn-primary btn-lg ' . (!$can_proceed ? 'disabled' : '') . '">Proceed to Checkout</a>
                 </div>
             </div>
           </div>';

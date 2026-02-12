@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: sql300.infinityfree.com
--- Generation Time: Feb 03, 2026 at 11:40 PM
--- Server version: 11.4.9-MariaDB
+-- Generation Time: Feb 12, 2026 at 08:02 AM
+-- Server version: 11.4.10-MariaDB
 -- PHP Version: 7.2.22
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -129,6 +129,7 @@ CREATE TABLE `orders` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `total_amount` decimal(10,2) NOT NULL,
+  `shipping_address` text DEFAULT NULL,
   `payment_method` varchar(50) DEFAULT 'cod',
   `status` enum('pending','paid','shipped','delivered','cancelled') DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT current_timestamp()
@@ -138,16 +139,21 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `user_id`, `total_amount`, `payment_method`, `status`, `created_at`) VALUES
-(6, 11, '3498.00', 'cod', 'delivered', '2026-02-01 04:32:02'),
-(7, 11, '2499.00', 'cod', 'shipped', '2026-02-01 04:34:24'),
-(8, 11, '199.00', 'cod', 'delivered', '2026-02-01 04:38:14'),
-(9, 12, '718.20', 'cod', 'pending', '2026-02-01 05:26:38'),
-(10, 13, '89.10', 'cod', 'pending', '2026-02-01 05:27:28'),
-(15, 4, '10.80', 'stripe', 'paid', '2026-02-03 03:42:42'),
-(17, 4, '12.00', 'cod', 'pending', '2026-02-03 03:44:57'),
-(21, 4, '999.00', 'stripe', 'paid', '2026-02-03 05:02:12'),
-(19, 4, '11.00', 'stripe', 'paid', '2026-02-03 03:47:09');
+INSERT INTO `orders` (`id`, `user_id`, `total_amount`, `shipping_address`, `payment_method`, `status`, `created_at`) VALUES
+(6, 11, '3498.00', NULL, 'cod', 'delivered', '2026-02-01 04:32:02'),
+(7, 11, '2499.00', NULL, 'cod', 'shipped', '2026-02-01 04:34:24'),
+(8, 11, '199.00', NULL, 'cod', 'delivered', '2026-02-01 04:38:14'),
+(9, 12, '718.20', NULL, 'cod', 'pending', '2026-02-01 05:26:38'),
+(10, 13, '89.10', NULL, 'cod', 'pending', '2026-02-01 05:27:28'),
+(25, 11, '45.00', NULL, 'stripe', 'paid', '2026-02-08 13:25:29'),
+(24, 11, '12.00', NULL, 'stripe', 'paid', '2026-02-08 12:17:02'),
+(23, 11, '1395.00', NULL, 'cod', 'pending', '2026-02-08 12:02:52'),
+(15, 4, '10.80', NULL, 'stripe', 'paid', '2026-02-03 03:42:42'),
+(17, 4, '12.00', NULL, 'cod', 'pending', '2026-02-03 03:44:57'),
+(21, 4, '999.00', NULL, 'stripe', 'paid', '2026-02-03 05:02:12'),
+(19, 4, '11.00', NULL, 'stripe', 'paid', '2026-02-03 03:47:09'),
+(22, 11, '40.50', NULL, 'cod', 'pending', '2026-02-08 11:49:01'),
+(26, 11, '45.00', 'Jaipur, Rajasthan 302012', 'cod', 'pending', '2026-02-08 13:35:28');
 
 -- --------------------------------------------------------
 
@@ -172,8 +178,12 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`) 
 (2, 9, 20, 1, '499.00'),
 (3, 9, 22, 1, '299.00'),
 (4, 10, 21, 1, '99.00'),
+(21, 26, 103, 1, '0.00'),
+(20, 25, 103, 1, '0.00'),
 (11, 15, 22, 1, '0.00'),
+(19, 24, 22, 1, '0.00'),
 (13, 17, 22, 1, '0.00'),
+(18, 22, 103, 1, '0.00'),
 (15, 19, 20, 1, '0.00'),
 (17, 21, 100, 1, '999.00');
 
@@ -215,7 +225,7 @@ INSERT INTO `products` (`id`, `vendor_id`, `category_id`, `name`, `description`,
 (21, 5, 8, 'Oxford Mini English Dictionary | Extra Help with Spelling, Grammar and Vocabulary', 'Oxford English Mini Dictionary is small easy to carry and includes all words you need for everyday use.In the seventh edition definitions are much clearer and accessible than ever before.It provides extra help with spelling grammar and vocabulary.', '8.00', 99, '1769921767_learn1.jpg', '2026-02-01 04:56:07'),
 (22, 6, 12, 'Kids Dancing Cactus Musical Toys', 'Type: Musical Toys\r\nColour: Green, whiteAge Group: 4 Year plus\r\nSet Contains:1 Musical Toy\r\nAssembly Required: No\r\nOperation Mode: Manual\r\n\r\nSize & Fit\r\n\r\nDimensions: 30.48 cm x 10 cm (Length x Width )\r\n\r\nMaterial & Care\r\n\r\nPlush \r\nHandle with Care', '12.00', 49, '1769921941_other1.jpg', '2026-02-01 04:59:01'),
 (102, 7, 2, 'Cotton T-Shirt', '100% organic cotton', '19.99', 200, '1770095598_tshirts.webp', '2026-02-03 04:52:12'),
-(103, 5, 3, 'Coffee Maker', 'Brews up to 12 cups', '45.00', 30, '1770095516_coffee.jpg', '2026-02-03 04:52:12'),
+(103, 5, 3, 'Coffee Maker', 'Brews up to 12 cups', '45.00', 28, '1770095516_coffee.jpg', '2026-02-03 04:52:12'),
 (100, 6, 5, 'Dummy Pro Laptop', 'Perfect for testing orders', '499.00', 10, '1770095633_laptop.jpg', '2026-02-03 05:02:12'),
 (101, 6, 1, 'Smartphone X', 'Latest model with 5G', '199.99', 50, '1770095619_smartphone.jpg', '2026-02-03 04:52:12');
 
@@ -512,13 +522,13 @@ ALTER TABLE `coupons`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `products`

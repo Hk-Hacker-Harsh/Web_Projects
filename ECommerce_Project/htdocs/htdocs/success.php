@@ -6,8 +6,8 @@ require_once __DIR__ . '/stripe-php/init.php';
 require_once __DIR__ . '/includes/header.php';
 
 // 1. Stripe Configuration
-$stripe_secret_key = '****';
-\Stripe\Stripe::setApiKey($stripe_secret_key);
+require_once __DIR__ . '/config.php';
+\Stripe\Stripe::setApiKey(STRIPE_SECRET_KEY);
 
 $order_placed = false;
 $error_msg = "";

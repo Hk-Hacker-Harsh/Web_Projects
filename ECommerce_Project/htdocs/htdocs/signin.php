@@ -12,28 +12,34 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// 2. PROCESS LOGIN: Still no HTML sent yet
+// 2. PROCESS LOGIN
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
     
+    // We fetch the user by email
     $checkEmail = "SELECT * FROM users WHERE email = '$email' LIMIT 1";
     $result = mysqli_query($conn, $checkEmail);
     
     if(mysqli_num_rows($result) > 0){
         $user = mysqli_fetch_assoc($result);
         
+        // Check 1: Verify Password
         if(password_verify($password, $user['password'])){
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['role'] = $user['role']; // Store role for access control
             
-            // Redirect logic
-            $url = isset($_SESSION['redirect_url']) ? $_SESSION['redirect_url'] : "profile.php";
-            unset($_SESSION['redirect_url']); 
-            
-            // This will now work because header.php hasn't been included yet!
-            header("Location: " . $url);
-            exit(); 
+            // Check 2: Verify Role (The missing piece!)
+            if($user['role'] !== 'customer') {
+                $error_msg = "Access Denied: This login is for customers only.";
+            } else {
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['role'] = $user['role'];
+                
+                $url = isset($_SESSION['redirect_url']) ? $_SESSION['redirect_url'] : "profile.php";
+                unset($_SESSION['redirect_url']); 
+                
+                header("Location: " . $url);
+                exit(); 
+            }
         } else {
             $error_msg = "Incorrect Password!";
         }

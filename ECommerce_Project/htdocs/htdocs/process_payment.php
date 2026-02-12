@@ -3,8 +3,8 @@ require_once 'db.php';
 require_once 'vendor/autoload.php'; // If using Composer, otherwise use their manual include
 
 // Use your SECRET KEY from the dashboard
-$stripe_secret_key = '****';
-\Stripe\Stripe::setApiKey($stripe_secret_key);
+require_once __DIR__ . '/config.php';
+\Stripe\Stripe::setApiKey(STRIPE_SECRET_KEY);
 
 header('Content-Type: application/json');
 

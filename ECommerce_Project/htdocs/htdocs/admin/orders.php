@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_status'])) {
 }
 
 // 2. Fetch All Orders with User Info and Vendor List
-// We use GROUP_CONCAT to get a unique list of vendors for each order
+// Included o.shipping_address in the selection
 $query = "SELECT o.*, u.name as customer_name, 
           GROUP_CONCAT(DISTINCT v.name SEPARATOR ', ') as vendors_involved
           FROM orders o
@@ -43,8 +43,7 @@ $result = mysqli_query($conn, $query);
                 <thead class="table-dark">
                     <tr>
                         <th>Order ID</th>
-                        <th>Customer</th>
-                        <th>Vendors Involved</th>
+                        <th>Customer & Shipping</th> <th>Vendors Involved</th>
                         <th>Total Amount</th>
                         <th>Date</th>
                         <th>Status</th>
@@ -55,7 +54,13 @@ $result = mysqli_query($conn, $query);
                     <?php while ($row = mysqli_fetch_assoc($result)): ?>
                         <tr>
                             <td>#<?= $row['id']; ?></td>
-                            <td><strong><?= htmlspecialchars($row['customer_name']); ?></strong></td>
+                            <td>
+                                <div><strong><?= htmlspecialchars($row['customer_name']); ?></strong></div>
+                                <div class="small text-muted" style="max-width: 250px;">
+                                    <i class="bi bi-geo-alt-fill"></i> 
+                                    <?= nl2br(htmlspecialchars($row['shipping_address'] ?? 'No address provided')); ?>
+                                </div>
+                            </td>
                             <td><small class="text-muted"><?= htmlspecialchars($row['vendors_involved'] ?? 'N/A'); ?></small></td>
                             <td class="fw-bold text-primary">$<?= number_format($row['total_amount'], 2); ?></td>
                             <td><?= date('d M Y, h:i A', strtotime($row['created_at'])); ?></td>
